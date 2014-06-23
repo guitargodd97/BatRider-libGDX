@@ -128,12 +128,17 @@ public class Background {
 		image.draw(batch);
 		batch.end();
 
+	}
+
+	public void renderClouds(SpriteBatch batch) {
+		batch.begin();
 		// Draws clouds
 		if (level) {
 			for (Cloud c : clouds)
 				c.render(batch);
 			// for (BottomCloud b : bottom)
 			// b.render(batch);
+			batch.end();
 		}
 	}
 }

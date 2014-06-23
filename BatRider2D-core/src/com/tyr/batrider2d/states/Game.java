@@ -75,6 +75,8 @@ public class Game extends GameState {
 		
 		player.render(batch);
 		
+		bg.renderClouds(batch);
+		
 		if(debug) {
 			b2dRenderer.render(world, cam.combined);
 		}

@@ -83,4 +83,8 @@ public class Animation {
 	public void setTimesPlayed(int timesPlayed) {
 		this.timesPlayed = timesPlayed;
 	}
+
+	public int getCurrentFrameNum() {
+		return currentFrame;
+	}
 }
