@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.tyr.batrider2d.BatGame;
 import com.tyr.batrider2d.entities.Player;
+import com.tyr.batrider2d.handlers.B2DVars;
 import com.tyr.batrider2d.handlers.Background;
 import com.tyr.batrider2d.handlers.BatInput;
 import com.tyr.batrider2d.handlers.GameStateManager;
@@ -22,7 +23,7 @@ import com.tyr.batrider2d.handlers.GameStateManager;
 public class Game extends GameState {
 
 	private boolean debug = true;
-	
+
 	private Background bg;
 	private Box2DDebugRenderer b2dRenderer;
 	private Player player;
@@ -33,20 +34,31 @@ public class Game extends GameState {
 		world = new World(new Vector2(0, -9.8f * 5), true);
 		bg = new Background(BatGame.assets.getSprite("gamebackground"), cam,
 				true, world);
-		
+
 		b2dRenderer = new Box2DDebugRenderer();
-		
+
 		cam.setToOrtho(false, BatGame.V_WIDTH, BatGame.V_HEIGHT);
-		
+
 		BodyDef playerdef = new BodyDef();
 		playerdef.type = BodyType.DynamicBody;
 		playerdef.position.set(30 / PPM, 200 / PPM);
+		playerdef.fixedRotation = true;
+
 		Body playerbody = world.createBody(playerdef);
+
 		PolygonShape playershape = new PolygonShape();
 		playershape.setAsBox(2f / PPM, 2f / PPM);
+
 		FixtureDef playerfdef = new FixtureDef();
 		playerfdef.shape = playershape;
+		playerfdef.density = 1;
+		playerfdef.friction = 0;
+		playerfdef.filter.categoryBits = B2DVars.BIT_PLAYER;
+		playerfdef.filter.maskBits = B2DVars.BIT_ENEMY_SHOT | B2DVars.BIT_ENEMY;
+
 		playerbody.createFixture(playerfdef);
+		playershape.dispose();
+
 		player = new Player(playerbody);
 		Sprite[] s = new Sprite[1];
 		s[0] = BatGame.assets.getSprite("batrider-hover");
@@ -54,7 +66,7 @@ public class Game extends GameState {
 	}
 
 	public void handleInput() {
-		if(BatInput.isPressed())
+		if (BatInput.isPressed())
 			player.flap();
 	}
 
@@ -68,16 +80,16 @@ public class Game extends GameState {
 	public void render() {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
+
 		batch.setProjectionMatrix(cam.combined);
-		
+
 		bg.render(batch);
-		
+
 		player.render(batch);
-		
+
 		bg.renderClouds(batch);
-		
-		if(debug) {
+
+		if (debug) {
 			b2dRenderer.render(world, cam.combined);
 		}
 	}

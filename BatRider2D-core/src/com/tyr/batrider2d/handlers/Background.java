@@ -22,6 +22,7 @@ public class Background {
 	private boolean level;
 	private BottomCloud[] bottom;
 	private Sprite image;
+	private Sprite needBlackBar;
 
 	// Constructor
 	public Background(Sprite image, OrthographicCamera gameCam, boolean level,
@@ -32,9 +33,9 @@ public class Background {
 		this.level = level;
 
 		if (level) {
-			bottom = new BottomCloud[25];
+			bottom = new BottomCloud[26];
 			for (int i = 0; i < bottom.length; i++)
-				bottom[i] = new BottomCloud();
+				bottom[i] = new BottomCloud(i);
 
 			clouds = new Array<Cloud>();
 			BodyDef clouddef = new BodyDef();
@@ -45,6 +46,7 @@ public class Background {
 			cloudshape.setAsBox(2f / PPM, 2f / PPM);
 			FixtureDef cloudfdef = new FixtureDef();
 			cloudfdef.shape = cloudshape;
+			cloudfdef.isSensor = true;
 			cloudbody.createFixture(cloudfdef);
 			Cloud c = new Cloud(cloudbody);
 			Sprite[] s = new Sprite[1];
@@ -107,6 +109,38 @@ public class Background {
 			s[0] = BatGame.assets.getSprite("cloud2");
 			c.setAnimation(s, 1 / 12f);
 			clouds.add(c);
+
+			clouddef = new BodyDef();
+			clouddef.type = BodyType.KinematicBody;
+			clouddef.position.set(320 / PPM, 75 / PPM);
+			cloudbody = world.createBody(clouddef);
+			cloudshape = new PolygonShape();
+			cloudshape.setAsBox(2f / PPM, 2f / PPM);
+			cloudfdef = new FixtureDef();
+			cloudfdef.shape = cloudshape;
+			cloudbody.createFixture(cloudfdef);
+			c = new Cloud(cloudbody);
+			s[0] = BatGame.assets.getSprite("cloud2");
+			c.setAnimation(s, 1 / 12f);
+			clouds.add(c);
+
+			clouddef = new BodyDef();
+			clouddef.type = BodyType.KinematicBody;
+			clouddef.position.set(320 / PPM, 75 / PPM);
+			cloudbody = world.createBody(clouddef);
+			cloudshape = new PolygonShape();
+			cloudshape.setAsBox(2f / PPM, 2f / PPM);
+			cloudfdef = new FixtureDef();
+			cloudfdef.shape = cloudshape;
+			cloudbody.createFixture(cloudfdef);
+			c = new Cloud(cloudbody);
+			s[0] = BatGame.assets.getSprite("cloud2");
+			c.setAnimation(s, 1 / 12f);
+			clouds.add(c);
+
+			needBlackBar = BatGame.assets.getSprite("menubackground");
+			needBlackBar.flip(false, true);
+			needBlackBar.setPosition(0, (-needBlackBar.getHeight() + 25));
 		}
 	}
 
@@ -115,8 +149,8 @@ public class Background {
 		if (level) {
 			for (Cloud c : clouds)
 				c.update(delta);
-			// for (BottomCloud b : bottom)
-			// b.update(delta);
+			for (BottomCloud b : bottom)
+				b.update(delta);
 		}
 	}
 
@@ -131,14 +165,15 @@ public class Background {
 	}
 
 	public void renderClouds(SpriteBatch batch) {
-		batch.begin();
 		// Draws clouds
 		if (level) {
+			batch.begin();
+			needBlackBar.draw(batch);
+			batch.end();
 			for (Cloud c : clouds)
 				c.render(batch);
-			// for (BottomCloud b : bottom)
-			// b.render(batch);
-			batch.end();
+			for (BottomCloud b : bottom)
+				b.render(batch);
 		}
 	}
 }

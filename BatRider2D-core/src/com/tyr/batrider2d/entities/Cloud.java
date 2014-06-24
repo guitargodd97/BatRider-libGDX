@@ -13,6 +13,12 @@ public class Cloud extends B2DSprite {
 		super(body);
 		dx = -1;
 		body.setLinearVelocity(dx, 0);
+		body.setTransform(
+				new Vector2(
+						(float) (((Math.random() * 23907520) % BatGame.V_WIDTH + 30))
+								/ B2DVars.PPM,
+						(float) (((Math.random() * 392572344) % (BatGame.V_HEIGHT - 60)) + 25)
+								/ B2DVars.PPM), body.getAngle());
 	}
 
 	public void update(float delta) {
@@ -20,10 +26,10 @@ public class Cloud extends B2DSprite {
 		if (body.getPosition().x < (-30 / B2DVars.PPM)) {
 			body.setTransform(
 					new Vector2(
-							(float) (BatGame.V_WIDTH + ((Math.random() * 23907520) % 80))
+							(float) (BatGame.V_WIDTH + ((Math.random() * 23907520) % 80 + 30))
 									/ B2DVars.PPM,
-							(float) (((Math.random() * 392572344) % (BatGame.V_HEIGHT - 40))
-									+ 25) / B2DVars.PPM), body.getAngle());
+							(float) (((Math.random() * 392572344) % (BatGame.V_HEIGHT - 60)) + 25)
+									/ B2DVars.PPM), body.getAngle());
 		}
 	}
 }
