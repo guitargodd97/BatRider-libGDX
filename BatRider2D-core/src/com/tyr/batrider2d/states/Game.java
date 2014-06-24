@@ -14,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.tyr.batrider2d.BatGame;
+import com.tyr.batrider2d.entities.HUD;
 import com.tyr.batrider2d.entities.Player;
 import com.tyr.batrider2d.handlers.B2DVars;
 import com.tyr.batrider2d.handlers.Background;
@@ -26,6 +27,7 @@ public class Game extends GameState {
 
 	private Background bg;
 	private Box2DDebugRenderer b2dRenderer;
+	private HUD hud;
 	private Player player;
 	private World world;
 
@@ -63,6 +65,8 @@ public class Game extends GameState {
 		Sprite[] s = new Sprite[1];
 		s[0] = BatGame.assets.getSprite("batrider-hover");
 		player.setAnimation(s, 1 / 12f);
+		
+		hud = new HUD();
 	}
 
 	public void handleInput() {
@@ -75,6 +79,7 @@ public class Game extends GameState {
 		world.step(delta / 5, 8, 3);
 		bg.update(delta);
 		player.update(delta);
+		hud.update(0);
 	}
 
 	public void render() {
@@ -92,6 +97,7 @@ public class Game extends GameState {
 		if (debug) {
 			b2dRenderer.render(world, cam.combined);
 		}
+		hud.render(batch);
 	}
 
 }
