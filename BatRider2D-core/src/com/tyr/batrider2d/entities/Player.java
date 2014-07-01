@@ -4,6 +4,10 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.tyr.batrider2d.BatGame;
 import com.tyr.batrider2d.handlers.Animation;
 import com.tyr.batrider2d.handlers.B2DVars;
@@ -14,6 +18,7 @@ public class Player extends B2DSprite {
 	private Animation flap;
 	private boolean flashing;
 	private boolean flapping;
+	private Fireball[] fireballs;
 	private float dy;
 	private int lives;
 	private Sprite[] lifeSprites;
@@ -31,6 +36,34 @@ public class Player extends B2DSprite {
 		lifeSprites[1] = BatGame.assets.getSprite("life");
 		lifeSprites[1].setPosition(4 + lifeSprites[1].getWidth(), 222);
 		lives = 3;
+
+		fireballs = new Fireball[5];
+		BodyDef bdef = new BodyDef();
+		bdef.type = BodyType.KinematicBody;
+		bdef.position.set(-1000 / B2DVars.PPM, body.getPosition().y);
+		bdef.fixedRotation = true;
+
+		Body fbody = body.getWorld().createBody(bdef);
+
+		PolygonShape shape = new PolygonShape();
+		shape.setAsBox(2f / B2DVars.PPM, 2f / B2DVars.PPM);
+
+		FixtureDef fdef = new FixtureDef();
+		fdef.shape = shape;
+		fdef.density = 1;
+		fdef.friction = 0;
+		fdef.filter.categoryBits = B2DVars.BIT_PLAYER_SHOT;
+		fdef.filter.maskBits = B2DVars.BIT_ENEMY;
+
+		fbody.createFixture(fdef);
+		shape.dispose();
+
+		for (int i = 0; i < fireballs.length; i++) {
+			fireballs[i] = new Fireball(fbody);
+			fireballs[i].setAnimation(
+					BatGame.assets.getAnimatedSprite("fireball-move", 2),
+					1 / 12f);
+		}
 	}
 
 	public void flap() {
@@ -45,6 +78,7 @@ public class Player extends B2DSprite {
 		if (!flapping) {
 
 		} else {
+
 			switch (flap.getCurrentFrameNum()) {
 			case (1):
 

@@ -65,13 +65,17 @@ public class Game extends GameState {
 		Sprite[] s = new Sprite[1];
 		s[0] = BatGame.assets.getSprite("batrider-hover");
 		player.setAnimation(s, 1 / 12f);
-		
+
 		hud = new HUD();
 	}
 
 	public void handleInput() {
-		if (BatInput.isPressed())
-			player.flap();
+		if (BatInput.isPressed()) {
+			if (BatInput.x < BatGame.V_WIDTH / 2)
+				player.flap();
+			else
+				player.shoot();
+		}
 	}
 
 	public void update(float delta) {
