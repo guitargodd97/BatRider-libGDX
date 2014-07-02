@@ -37,13 +37,11 @@ public class Player extends B2DSprite {
 		lifeSprites[1].setPosition(4 + lifeSprites[1].getWidth(), 222);
 		lives = 3;
 
-		fireballs = new Fireball[5];
+		fireballs = new Fireball[10];
 		BodyDef bdef = new BodyDef();
 		bdef.type = BodyType.KinematicBody;
 		bdef.position.set(-1000 / B2DVars.PPM, body.getPosition().y);
 		bdef.fixedRotation = true;
-
-		Body fbody = body.getWorld().createBody(bdef);
 
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(2f / B2DVars.PPM, 2f / B2DVars.PPM);
@@ -55,15 +53,18 @@ public class Player extends B2DSprite {
 		fdef.filter.categoryBits = B2DVars.BIT_PLAYER_SHOT;
 		fdef.filter.maskBits = B2DVars.BIT_ENEMY;
 
-		fbody.createFixture(fdef);
-		shape.dispose();
+		
+		
 
 		for (int i = 0; i < fireballs.length; i++) {
+			Body fbody = body.getWorld().createBody(bdef);
+			fbody.createFixture(fdef);
 			fireballs[i] = new Fireball(fbody);
 			fireballs[i].setAnimation(
 					BatGame.assets.getAnimatedSprite("fireball-move", 2),
 					1 / 12f);
 		}
+		shape.dispose();
 	}
 
 	public void flap() {
@@ -75,23 +76,12 @@ public class Player extends B2DSprite {
 	}
 
 	public void shoot() {
-		if (!flapping) {
-
-		} else {
-
-			switch (flap.getCurrentFrameNum()) {
-			case (1):
-
-				break;
-			case (2):
-
-				break;
-			default:
-
-				break;
+		for (int i = 0; i < fireballs.length; i++) {
+			if (!fireballs[i].isActive()) {
+				fireballs[i].activate(body.getPosition());
+				i = fireballs.length;
 			}
 		}
-
 	}
 
 	public void loseLife() {
@@ -116,6 +106,8 @@ public class Player extends B2DSprite {
 		else if (body.getPosition().y * B2DVars.PPM < -30)
 			body.setTransform(new Vector2(20 / B2DVars.PPM, -30 / B2DVars.PPM),
 					body.getAngle());
+		for (Fireball ball : fireballs)
+			ball.update(delta);
 	}
 
 	public void render(SpriteBatch batch) {
@@ -138,6 +130,9 @@ public class Player extends B2DSprite {
 				lifeSprites[i].draw(batch);
 		}
 		batch.end();
+
+		for (Fireball ball : fireballs)
+			ball.render(batch);
 	}
 
 	public boolean isDead() {
