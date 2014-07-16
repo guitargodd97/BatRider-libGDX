@@ -78,7 +78,7 @@ public class Player extends B2DSprite {
 	public void shoot() {
 		for (int i = 0; i < fireballs.length; i++) {
 			if (!fireballs[i].isActive()) {
-				fireballs[i].activate(body.getPosition());
+				fireballs[i].activate(body.getPosition(), true);
 				i = fireballs.length;
 			}
 		}

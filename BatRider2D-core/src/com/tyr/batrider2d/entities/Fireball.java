@@ -36,10 +36,13 @@ public class Fireball extends B2DSprite {
 			deactivate();
 	}
 
-	public void activate(Vector2 position) {
+	public void activate(Vector2 position, boolean player) {
 		active = true;
 		fade.setTimesPlayed(0);
-		dx = 5;
+		if (player)
+			dx = 5;
+		else
+			dx = -5;
 		body.setLinearVelocity(dx, 0);
 		body.setTransform(position, body.getAngle());
 	}
@@ -66,5 +69,9 @@ public class Fireball extends B2DSprite {
 
 	public void setFade(boolean fading) {
 		this.fading = fading;
+	}
+
+	public void switchAnimation(String name) {
+		this.animation = new Animation(BatGame.assets.getAnimatedSprite(name + "-move", 2));
 	}
 }
